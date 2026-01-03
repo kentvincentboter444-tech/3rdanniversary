@@ -1,0 +1,267 @@
+/* GENERAL SETUP */
+body {
+    background-color: #000; 
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    font-family: 'Cinzel', serif;
+    color: white;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.screen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 1s ease;
+    cursor: pointer;
+}
+
+.hidden { opacity: 0; pointer-events: none; z-index: -1; }
+.active { opacity: 1; pointer-events: all; z-index: 1; }
+
+/* --- SCOREBOARD --- */
+#scoreboard {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.6); 
+    backdrop-filter: blur(5px); 
+    padding: 10px 15px;
+    border-radius: 12px;
+    border: 1px solid #d4af37; 
+    z-index: 50; 
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    pointer-events: none; 
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+}
+
+.score-item {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.score-item span:first-child {
+    font-size: 1.4rem; 
+}
+
+.score-pulse {
+    animation: scorePop 0.2s ease-out;
+    color: #d4af37; 
+}
+
+@keyframes scorePop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.5); }
+    100% { transform: scale(1); }
+}
+
+/* --- FLOATING POP MESSAGE (New) --- */
+.pop-message {
+    position: absolute;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: #fff;
+    pointer-events: none; /* Let clicks pass through */
+    text-shadow: 0 0 5px #ff4d4d, 0 0 10px #000; /* Glow for visibility */
+    animation: floatUp 0.8s forwards;
+    z-index: 101; /* Top layer */
+    white-space: nowrap; /* Don't wrap text */
+    transform: translate(-50%, -50%); /* Center on finger */
+}
+
+@keyframes floatUp {
+    0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -150%) scale(1.2); }
+}
+
+
+/* --- PHASE 1: FINGERPRINT --- */
+.fingerprint-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.fingerprint-icon {
+    position: absolute;
+    animation: breath 2s infinite;
+}
+
+@keyframes breath {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
+}
+
+.progress-ring__circle {
+    stroke-dasharray: 326; 
+    stroke-dashoffset: 326; 
+    transition: stroke-dashoffset 2s linear; 
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+}
+
+.holding .progress-ring__circle {
+    stroke-dashoffset: 0; 
+    stroke: #ff4d4d;
+}
+
+/* --- PHASE 2: MYSTERY BOX --- */
+.box {
+    width: 150px;
+    height: 150px;
+    background: #333; 
+    position: relative;
+    border-radius: 4px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transition: background 0.5s, transform 0.2s;
+    pointer-events: none; 
+    z-index: 20; 
+}
+
+.ribbon-vertical { 
+    position: absolute; width: 20px; height: 100%; 
+    left: 50%; transform: translateX(-50%); background: #1a1a1a; 
+}
+.ribbon-horizontal { 
+    position: absolute; height: 20px; width: 100%; 
+    top: 50%; transform: translateY(-50%); background: #1a1a1a; 
+}
+
+/* RAIN ANIMATION CONTAINER */
+#rain-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; 
+    z-index: 10; 
+}
+
+.falling-object {
+    position: absolute;
+    top: -50px;
+    font-size: 2rem;
+    animation: fall linear forwards;
+    opacity: 0.9;
+    text-shadow: 0 0 15px rgba(255, 77, 77, 0.8); 
+    pointer-events: auto; /* MAKES THEM CLICKABLE */
+    cursor: crosshair;
+}
+
+@keyframes fall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 0.9; }
+    100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+}
+
+/* BOX FEEDBACK */
+.shake { 
+    animation: errorShake 0.4s; 
+    background: #800000 !important; 
+}
+
+@keyframes errorShake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    50% { transform: translateX(10px); }
+    75% { transform: translateX(-10px); }
+    100% { transform: translateX(0); }
+}
+
+.box-ready {
+    background: #d4af37 !important; 
+    box-shadow: 0 0 30px #d4af37;
+    animation: subtleBounce 0.8s infinite alternate;
+}
+
+@keyframes subtleBounce { from {transform: translateY(0);} to {transform: translateY(-8px);} }
+
+.box-pop {
+    animation: pop 0.3s ease-out;
+}
+
+@keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); } 
+    100% { transform: scale(1); }
+}
+
+/* MESSAGE */
+.msg-text {
+    position: absolute;
+    top: 15%;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5rem;
+    color: #d4af37;
+    opacity: 0;
+    transition: opacity 0.5s;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+    z-index: 30; 
+    width: 100%;
+    text-align: center;
+}
+
+/* PHASE 3: LETTER */
+.letter-paper {
+    background: #fff0f5; 
+    color: #111;
+    width: 80%;
+    max-width: 500px;
+    height: 70vh;
+    padding: 40px;
+    overflow-y: auto; 
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.2rem;
+    box-shadow: 0 0 50px rgba(255,255,255,0.1);
+    line-height: 1.6;
+    border-radius: 5px;
+    text-align: left;
+    cursor: default;
+}
+
+.letter-paper h1 {
+    font-family: 'Cinzel', serif;
+    text-align: center;
+    color: #b30000;
+    border-bottom: 2px solid #b30000;
+    padding-bottom: 10px;
+    margin-top: 0;
+}
+
+.ending {
+    font-weight: bold;
+    color: #b30000;
+    margin-top: 30px;
+    font-size: 1.3rem;
+    text-align: center;
+}
+
+.signature {
+    text-align: right;
+    font-family: 'Cinzel', serif;
+    margin-top: 40px;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
